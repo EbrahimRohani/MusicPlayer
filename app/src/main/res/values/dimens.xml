@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="shuffle_icon_width_size">16sp</dimen>
+    <dimen name="shuffle_icon_height_size">16sp</dimen>
+    <dimen name="padding_shuffle_tv">8dp</dimen>
+</resources>
