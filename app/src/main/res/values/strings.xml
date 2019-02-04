@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MusicPlayer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="all_songs_bottom_nav">Songs</string>
+    <string name="artists_bottom_nav">Artists</string>
+    <string name="albums_bottom_nav">Albums</string>
+    <string name="shuffle_all_text_view">Shuffle all</string>
+</resources>
