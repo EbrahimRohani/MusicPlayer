@@ -1,15 +1,11 @@
 package com.example.ebrah.musicplayer.controller;
 
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ebrah.musicplayer.R;
 import com.example.ebrah.musicplayer.model.Song;
@@ -82,16 +77,25 @@ public class SongListFragment extends Fragment {
             mSongIconImageView = itemView.findViewById(R.id.song_icon);
             mAlbumTitleTextView = itemView.findViewById(R.id.album_of_song_text_view);
             mSongTitleTextView = itemView.findViewById(R.id.song_text_view);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = PlayMusicActivity.newIntent(getActivity(), mSong.getSongUri().toString());
+                    Log.e("loleri", "onClick: " + mSong.getSongUri().toString() );
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bind(Song song){
             mSong = song;
             mSongTitleTextView.setText(song.getTitle());
             mAlbumTitleTextView.setText(song.getAlbum());
-            if (song.getSongUri() == null)
+            if (song.getSongImageUri() == null)
                 mSongIconImageView.setImageResource(R.drawable.ic_all_musics);
             else
-                mSongIconImageView.setImageURI(song.getSongUri());
+                mSongIconImageView.setImageURI(song.getSongImageUri());
 
 
         }

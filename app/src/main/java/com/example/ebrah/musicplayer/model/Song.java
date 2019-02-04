@@ -8,8 +8,6 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.converter.PropertyConverter;
 import org.greenrobot.greendao.annotation.Generated;
 
-import androidx.annotation.IdRes;
-
 @Entity
 public class Song {
 
@@ -20,16 +18,25 @@ public class Song {
 
 
     @Convert(converter = UriConverter.class, columnType = String.class)
+    private Uri songImageUri;
+
+    @Convert(converter = UriConverter.class, columnType = String.class)
     private Uri songUri;
 
 
-    @Generated(hash = 1714397062)
-    public Song(Long id, String title, String album, Uri songUri) {
+
+
+    @Generated(hash = 1457158522)
+    public Song(Long id, String title, String album, Uri songImageUri,
+            Uri songUri) {
         this.id = id;
         this.title = title;
         this.album = album;
+        this.songImageUri = songImageUri;
         this.songUri = songUri;
     }
+
+
 
 
     @Generated(hash = 87031450)
@@ -37,9 +44,13 @@ public class Song {
     }
 
 
+
+
     public Long getId() {
         return this.id;
     }
+
+
 
 
     public void setId(Long id) {
@@ -47,9 +58,13 @@ public class Song {
     }
 
 
+
+
     public String getTitle() {
         return this.title;
     }
+
+
 
 
     public void setTitle(String title) {
@@ -57,14 +72,6 @@ public class Song {
     }
 
 
-    public Uri getSongUri() {
-        return this.songUri;
-    }
-
-
-    public void setSongUri(Uri songUri) {
-        this.songUri = songUri;
-    }
 
 
     public String getAlbum() {
@@ -72,9 +79,41 @@ public class Song {
     }
 
 
+
+
     public void setAlbum(String album) {
         this.album = album;
     }
+
+
+
+
+    public Uri getSongImageUri() {
+        return this.songImageUri;
+    }
+
+
+
+
+    public void setSongImageUri(Uri songImageUri) {
+        this.songImageUri = songImageUri;
+    }
+
+
+
+
+    public Uri getSongUri() {
+        return this.songUri;
+    }
+
+
+
+
+    public void setSongUri(Uri songUri) {
+        this.songUri = songUri;
+    }
+
+    
 
     
     public static class UriConverter implements PropertyConverter<Uri, String> {

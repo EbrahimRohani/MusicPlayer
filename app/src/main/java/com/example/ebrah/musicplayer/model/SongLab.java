@@ -28,6 +28,7 @@ public class SongLab {
     }
 
     public List<Song> getSongList(Context context) {
+        final String INIT_URI = "file:///";
         final Uri albumArtUri = Uri.parse("content://media/external/audio/albumart");
         List<Song> songList = new ArrayList<>();
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -43,11 +44,14 @@ public class SongLab {
                 Long songId = songCursor.getLong(songCursor.getColumnIndex(MediaStore.Audio.Media._ID));
                 String songTitle = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 String artistTitle = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String musicPath = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                Uri musicUri = Uri.parse(INIT_URI + musicPath);
                 Uri albumCoverUri = ContentUris.withAppendedId(albumArtUri, songCursor.getLong(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
 
-                Song song = new Song(songId, songTitle,artistTitle,albumCoverUri);
+                Song song = new Song(songId, songTitle,artistTitle,albumCoverUri, musicUri);
 
                 songList.add(song);
+                Log.i("soop", "Uri " + song.getSongUri().toString());
                 Log.d(TAG, "Song added " + songList.size());
                 songCursor.moveToNext();
             }
