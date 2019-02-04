@@ -3,7 +3,11 @@ package com.example.ebrah.musicplayer.controller;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.example.ebrah.musicplayer.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -13,6 +17,7 @@ import androidx.fragment.app.Fragment;
 public class MainActivity extends SingleFragmentActivity {
 
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private BottomNavigationView mBottomNavigationView;
 
     @Override
     public Fragment createFragment() {
@@ -23,6 +28,29 @@ public class MainActivity extends SingleFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestAudioPermissions();
+        mBottomNavigationView = findViewById(R.id.bottom_nav);
+
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.tab_songs:
+                        SongListFragment songListFragment = SongListFragment.newInstance();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, songListFragment).commit();
+                        break;
+
+                    case R.id.tab_albums:
+                        AlbumListFragment albumListFragment = AlbumListFragment.newInstance();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, albumListFragment).commit();
+                        break;
+
+                    case R.id.tab_artists:
+                        ArtistListFragment artistListFragment = ArtistListFragment.newInstance();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, artistListFragment).commit();
+                }
+                return true;
+            }
+        });
     }
 
     private void requestAudioPermissions() {
@@ -49,6 +77,7 @@ public class MainActivity extends SingleFragmentActivity {
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -65,9 +65,9 @@ public class SongListFragment extends Fragment {
     }
 
     public void updateUI(){
-        List<Song> songList = SongLab.getInstance().getSongList(getActivity());
-        Log.i("hello", "updateUI: " + songList.size());
-        mSongAdapter = new SongAdapter(songList);
+        mSongList = SongLab.getInstance().getSongList(getActivity());
+        Log.i("hello", "updateUI: " + mSongList.size());
+        mSongAdapter = new SongAdapter(mSongList);
         mSongsRecyclerView.setAdapter(mSongAdapter);
     }
 
