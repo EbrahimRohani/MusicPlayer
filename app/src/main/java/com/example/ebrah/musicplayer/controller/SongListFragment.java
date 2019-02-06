@@ -30,6 +30,7 @@ public class SongListFragment extends Fragment {
     private RecyclerView mSongsRecyclerView;
     private SongAdapter mSongAdapter;
     private List<Song> mSongList;
+    private int mAdapterPosition;
 
     public static SongListFragment newInstance() {
 
@@ -81,8 +82,8 @@ public class SongListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = PlayMusicActivity.newIntent(getActivity(), mSong.getSongUri().toString());
-                    Log.e("loleri", "onClick: " + mSong.getSongUri().toString() );
+                    mAdapterPosition = getAdapterPosition();
+                    Intent intent = PlayMusicActivity.newIntent(getActivity(), mSong.getSongUri().toString(), mAdapterPosition);
                     startActivity(intent);
                 }
             });
