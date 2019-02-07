@@ -1,13 +1,17 @@
 package com.example.ebrah.musicplayer.controller;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class PlayMusicActivity extends SingleFragmentActivity {
+import com.example.ebrah.musicplayer.R;
+
+public class PlayMusicActivity extends AppCompatActivity {
 
     private static final String EXTRA_SONG_STRING = "com.example.ebrah.musicplayer.controller.song_string";
     private static final String EXTRA_ADAPTER_POSITION = "com.example.ebrah.musicplayer.controller.adapter_position";
@@ -22,11 +26,17 @@ public class PlayMusicActivity extends SingleFragmentActivity {
     }
 
     @Override
-    public Fragment createFragment() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_single_play_music);
+
         mSongString= getIntent().getStringExtra(EXTRA_SONG_STRING);
         mAdapterPosition = getIntent().getIntExtra(EXTRA_ADAPTER_POSITION, 0);
-        return PlayMusicFragment.newInstance(mSongString, mAdapterPosition);
-    }
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        PlayMusicFragment playMusicFragment = PlayMusicFragment.newInstance(mSongString, mAdapterPosition);
+        if(fragmentManager.findFragmentById(R.id.single_play_music_container) == null)
+            fragmentManager.beginTransaction().add(R.id.single_play_music_container, playMusicFragment).commit();
+    }
 
 }

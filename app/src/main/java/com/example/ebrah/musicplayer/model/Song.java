@@ -15,7 +15,7 @@ public class Song {
     private Long id;
     private String title;
     private String album;
-
+    private int songDuration;
 
     @Convert(converter = UriConverter.class, columnType = String.class)
     private Uri songImageUri;
@@ -26,12 +26,13 @@ public class Song {
 
 
 
-    @Generated(hash = 1457158522)
-    public Song(Long id, String title, String album, Uri songImageUri,
-            Uri songUri) {
+    @Generated(hash = 743652352)
+    public Song(Long id, String title, String album, int songDuration,
+            Uri songImageUri, Uri songUri) {
         this.id = id;
         this.title = title;
         this.album = album;
+        this.songDuration = songDuration;
         this.songImageUri = songImageUri;
         this.songUri = songUri;
     }
@@ -88,6 +89,20 @@ public class Song {
 
 
 
+    public int getSongDuration() {
+        return this.songDuration;
+    }
+
+
+
+
+    public void setSongDuration(int songDuration) {
+        this.songDuration = songDuration;
+    }
+
+
+
+
     public Uri getSongImageUri() {
         return this.songImageUri;
     }
@@ -113,7 +128,7 @@ public class Song {
         this.songUri = songUri;
     }
 
-    
+
 
     
     public static class UriConverter implements PropertyConverter<Uri, String> {

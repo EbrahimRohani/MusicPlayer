@@ -3,12 +3,15 @@ package com.example.ebrah.musicplayer.model;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.renderscript.ScriptC;
 import android.util.Log;
 
 import com.example.ebrah.musicplayer.database.App;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -49,14 +52,14 @@ public class SongLab {
                 String artistTitle = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 //String musicPath = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 //Uri musicUri = Uri.parse(INIT_URI + musicPath);
+                int songDuration  = songCursor.getInt(songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 Uri musicUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, songId);
                 Uri albumCoverUri = ContentUris.withAppendedId(albumArtUri, songCursor.getLong(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
-
-                Song song = new Song(songId, songTitle,artistTitle,albumCoverUri, musicUri);
+                Long songAlbumId = songCursor.getLong(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                /**Uri albumCoverUri = getSongCover(context, songAlbumId); */
+                Song song = new Song(songId, songTitle, artistTitle, songDuration, albumCoverUri, musicUri);
 
                 songList.add(song);
-                Log.i("soop", "Uri " + song.getSongUri().toString());
-                Log.d(TAG, "Song added " + songList.size());
                 songCursor.moveToNext();
             }
         } catch (Exception e){
@@ -66,6 +69,27 @@ public class SongLab {
         }
         Log.d(TAG, "getSongList: " +songList.size());
         return songList;
+    }
+
+    public Uri getSongCover(Context context, Long albumId){
+        Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
+        String whereClause = MediaStore.Audio.Albums._ID + " = ? ";
+        String[] whereArgs = new String[]{albumId.toString()};
+        Cursor albumCursor = context.getContentResolver().query(albumUri, new String[]{MediaStore.Audio.Albums._ID}, whereClause,whereArgs,null);
+        try {
+            if (albumCursor.getCount() == 0)
+                return null;
+            albumCursor.moveToFirst();
+            while(!albumCursor.isAfterLast()) {
+                return Uri.parse(albumCursor.getString(albumCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)));
+            }
+
+        }catch (Exception e){
+            Log.e("soop", "getSongCover: ",e );
+        } finally{
+            albumCursor.close();
+        }
+        return null;
     }
 
     public Song getSongByUri(Context context, Uri songUri){
