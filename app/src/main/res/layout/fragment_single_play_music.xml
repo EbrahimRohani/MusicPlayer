@@ -4,16 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.PlayMusicFragment">
+    tools:context=".controller.PlayMusicFragment"
+    android:background="@color/colorPrimaryLight">
 
     <ImageView
         android:id="@+id/music_single_album_cover"
-        android:layout_width="0dp"
-        android:layout_height="256dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/grey"
+        android:backgroundTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/song_title_single_play_music_frag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,17 +26,12 @@
 
     <SeekBar
         android:id="@+id/music_seek_bar"
-        android:layout_width="0dp"
+        android:layout_width="352dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/play_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/music_single_album_cover"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:layout_marginBottom="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/next_button"
+        app:layout_constraintEnd_toEndOf="@+id/music_single_album_cover"
+        app:layout_constraintStart_toStartOf="@+id/music_single_album_cover" />
 
     <ImageButton
         android:id="@+id/next_button"
@@ -81,14 +80,14 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/previous_button" />
+        app:layout_constraintTop_toTopOf="@+id/previous_button"/>
 
     <ImageButton
         android:id="@+id/repeat_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_repeat_for_ever_music"
+        android:src="@drawable/ic_repeat_music"
         app:layout_constraintBottom_toBottomOf="@+id/next_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

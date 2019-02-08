@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +31,11 @@ public class PlayMusicFragment extends Fragment {
     private static final String ARGS_SONG_STRING = "args_song_string";
     private MainPlayer mMainPlayer;
 
+    private int[] mRepeatState;
     private int mSongCurrentPosition;
     private Uri mSongUri;
     private boolean isShuffleBtnClicked = false;
-    private ImageButton mPlayBtn, mNextBtn, mShuffleBtn, mPreviousBtn;
+    private ImageButton mPlayBtn, mNextBtn, mShuffleBtn, mPreviousBtn, mRepeatBtn;
     private ImageView mAlbumCover;
     private SeekBar mMusicSeekBar;
     private TextView mSongTitle;
@@ -44,6 +44,7 @@ public class PlayMusicFragment extends Fragment {
     private Song mSong;
     private int mPrevPosition;
     private int mPrevCounter;
+    private int mRepeatStateInit;
     private Handler mHandler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
@@ -77,7 +78,8 @@ public class PlayMusicFragment extends Fragment {
         mAdapterPosition = getArguments().getInt(ARGS_ADAPTER_POSITION);
         mSongUri = Uri.parse(songString);
         mSong = SongLab.getInstance().getSongByUri(getActivity(), mSongUri);
-
+        mRepeatState = new int[]{0, 1, 2};
+        mRepeatStateInit = 0;
         mMainPlayer = MainPlayer.getInstance();
     }
 
@@ -205,8 +207,18 @@ public class PlayMusicFragment extends Fragment {
                 if(isShuffleBtnClicked)
                     mShuffleBtn.clearColorFilter();
                 else
-                    mShuffleBtn.setColorFilter(getResources().getColor(R.color.colorAccent));
+                    mShuffleBtn.setColorFilter(getResources().getColor(R.color.colorPrimaryLight));
                 setShuffleBtnClicked();
+            }
+        });
+
+        mRepeatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mRepeatStateInit == 2)
+                    mRepeatStateInit = -1;
+                int state = mRepeatState[++mRepeatStateInit];
+                setRepeatState(state);
             }
         });
 
@@ -221,6 +233,20 @@ public class PlayMusicFragment extends Fragment {
         mSongTitle.setText(mSong.getTitle());
     }
 
+    private void setRepeatState(int repeatState){
+        if(repeatState == 0){
+            mRepeatBtn.setImageResource(R.drawable.ic_repeat_music);
+            mRepeatBtn.clearColorFilter();
+        }else if(repeatState == 1){
+            mRepeatBtn.setImageResource(R.drawable.ic_repeat_once_music);
+            mRepeatBtn.setColorFilter(getResources().getColor(R.color.colorPrimaryLight));
+        }else{
+            mRepeatBtn.setImageResource(R.drawable.ic_repeat_music);
+            mRepeatBtn.setColorFilter(getResources().getColor(R.color.colorPrimaryLight));
+        }
+
+    }
+
     private void initialize(View view) {
         mPlayBtn = view.findViewById(R.id.play_button);
         mNextBtn = view.findViewById(R.id.next_button);
@@ -229,6 +255,7 @@ public class PlayMusicFragment extends Fragment {
         mShuffleBtn = view.findViewById(R.id.shuffle_button_unselected);
         mPreviousBtn = view.findViewById(R.id.previous_button);
         mSongTitle = view.findViewById(R.id.song_title_single_play_music_frag);
+        mRepeatBtn = view.findViewById(R.id.repeat_button);
     }
 
     @Override
