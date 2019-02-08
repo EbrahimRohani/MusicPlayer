@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class PlayMusicFragment extends Fragment {
     private static final String ARGS_SONG_STRING = "args_song_string";
     private MainPlayer mMainPlayer;
 
-    private int[] mRepeatState;
+    private int[] mRepeatStateArray;
     private int mSongCurrentPosition;
     private Uri mSongUri;
     private boolean isShuffleBtnClicked = false;
@@ -44,7 +45,7 @@ public class PlayMusicFragment extends Fragment {
     private Song mSong;
     private int mPrevPosition;
     private int mPrevCounter;
-    private int mRepeatStateInit;
+    private int mRepeatState;
     private Handler mHandler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
@@ -78,8 +79,8 @@ public class PlayMusicFragment extends Fragment {
         mAdapterPosition = getArguments().getInt(ARGS_ADAPTER_POSITION);
         mSongUri = Uri.parse(songString);
         mSong = SongLab.getInstance().getSongByUri(getActivity(), mSongUri);
-        mRepeatState = new int[]{0, 1, 2};
-        mRepeatStateInit = 0;
+        mRepeatStateArray = new int[]{0, 1, 2};
+        mRepeatState = 0;
         mMainPlayer = MainPlayer.getInstance();
     }
 
@@ -121,10 +122,37 @@ public class PlayMusicFragment extends Fragment {
         mMainPlayer.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
-                mMusicSeekBar.setMax(mSong.getSongDuration());
-                mMainPlayer.next(mSong);
-                setSongInfo();
+                switch (mRepeatState){
+                    case 0:
+                        if(mAdapterPosition == SongLab.getInstance().getSongList(getActivity()).size()-1){
+                            Log.i("loperi", "onCompletion: REACHED! if..." + mAdapterPosition +"\t" +  mRepeatState);
+                            mAdapterPosition = -1;
+                            mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
+                            mMainPlayer.stop();
+                            mMusicSeekBar.setMax(mSong.getSongDuration());
+                            mMusicSeekBar.setProgress(0);
+                            setSongInfo();
+                        }
+                        else {
+                            Log.i("loperi", "onCompletion: REACHED else....!" + mAdapterPosition + "\t" + mRepeatState);
+                            goToNextMusic();
+                        }
+                        break;
+
+                    case 1:
+                        Log.i("loperi", "onCompletion: REACHED!" + mAdapterPosition +"\t" +  mRepeatState);
+                        if(mAdapterPosition == SongLab.getInstance().getSongList(getActivity()).size()-1)
+                            mAdapterPosition = -1;
+                        goToNextMusic();
+                        break;
+
+                    case 2:
+                        Log.i("loperi", "onCompletion: REACHED!" + mAdapterPosition +"\t" +  mRepeatState);
+                        loadMusic();
+                        break;
+
+                }
+
             }
         });
 
@@ -154,7 +182,6 @@ public class PlayMusicFragment extends Fragment {
                     Random random = new Random();
                     int shuffledPosition = random.nextInt(SongLab.getInstance().getSongList(getActivity()).size());
                     mSong = SongLab.getInstance().getSongList(getActivity()).get(shuffledPosition);
-                    //mPrevPosition = mAdapterPosition;
                     mAdapterPosition = shuffledPosition;
 
                 }
@@ -164,11 +191,8 @@ public class PlayMusicFragment extends Fragment {
                         mAdapterPosition = -1;
                     mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
                         //mPrevPosition = mAdapterPosition;
-
                 }
-                mMusicSeekBar.setMax(mSong.getSongDuration());
-                mMainPlayer.next(mSong);
-                setSongInfo();
+                loadMusic();
             }
         });
 
@@ -185,16 +209,10 @@ public class PlayMusicFragment extends Fragment {
 //                    }
                     mMainPlayer.pause();
                     mSong = SongLab.getInstance().getSongList(getActivity()).get(--mAdapterPosition);
-                    mMusicSeekBar.setMax(mSong.getSongDuration());
-                    mMainPlayer.next(mSong);
-                    //mAdapterPosition = mPrevPosition;
-
-                    setSongInfo();
+                    loadMusic();
                 }
                 else {
-                    mMainPlayer.stop();
-                    mMainPlayer.reset();
-                    mMainPlayer.play(mSong);
+                    loadMusic();
                 }
 
             }
@@ -215,14 +233,38 @@ public class PlayMusicFragment extends Fragment {
         mRepeatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mRepeatStateInit == 2)
-                    mRepeatStateInit = -1;
-                int state = mRepeatState[++mRepeatStateInit];
+                if(mRepeatState == 2)
+                    mRepeatState = -1;
+                int state = mRepeatStateArray[++mRepeatState];
                 setRepeatState(state);
             }
         });
 
         return view;
+    }
+
+    private void goToNextMusic() {
+        if(isShuffleBtnClicked) {
+            Random random = new Random();
+            int shuffledPosition = random.nextInt(SongLab.getInstance().getSongList(getActivity()).size());
+            mSong = SongLab.getInstance().getSongList(getActivity()).get(shuffledPosition);
+            mAdapterPosition = shuffledPosition;
+
+        }
+
+        else {
+            if(mAdapterPosition == SongLab.getInstance().getSongList(getActivity()).size()-1)
+                mAdapterPosition = -1;
+            mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
+            //mPrevPosition = mAdapterPosition;
+        }
+        loadMusic();
+    }
+
+    private void loadMusic() {
+        mMusicSeekBar.setMax(mSong.getSongDuration());
+        mMainPlayer.next(mSong);
+        setSongInfo();
     }
 
     private void setSongInfo() {
@@ -231,6 +273,11 @@ public class PlayMusicFragment extends Fragment {
         else
             mAlbumCover.setImageURI(mSong.getSongImageUri());
         mSongTitle.setText(mSong.getTitle());
+
+        if(mMainPlayer.isPlaying())
+            mPlayBtn.setImageResource(R.drawable.ic_pause_music);
+        else
+            mPlayBtn.setImageResource(R.drawable.ic_play_music);
     }
 
     private void setRepeatState(int repeatState){
@@ -238,10 +285,10 @@ public class PlayMusicFragment extends Fragment {
             mRepeatBtn.setImageResource(R.drawable.ic_repeat_music);
             mRepeatBtn.clearColorFilter();
         }else if(repeatState == 1){
-            mRepeatBtn.setImageResource(R.drawable.ic_repeat_once_music);
+            mRepeatBtn.setImageResource(R.drawable.ic_repeat_music);
             mRepeatBtn.setColorFilter(getResources().getColor(R.color.colorPrimaryLight));
         }else{
-            mRepeatBtn.setImageResource(R.drawable.ic_repeat_music);
+            mRepeatBtn.setImageResource(R.drawable.ic_repeat_once_music);
             mRepeatBtn.setColorFilter(getResources().getColor(R.color.colorPrimaryLight));
         }
 

@@ -22,17 +22,6 @@ public class MainPlayer {
         return ourInstance;
     }
 
-//    public MainPlayer getMediaPlayer(Song song) {
-//        this.mSong = song;
-//
-//        try {
-//            songPrepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return this;
-//    }
 
     public MediaPlayer getMediaPlayer(){
         return mMediaPlayer;
