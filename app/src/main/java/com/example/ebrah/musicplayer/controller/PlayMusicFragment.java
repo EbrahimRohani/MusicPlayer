@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.ebrah.musicplayer.model.Song;
 import com.example.ebrah.musicplayer.model.SongLab;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,16 +32,18 @@ public class PlayMusicFragment extends Fragment {
 
     public static final String ARGS_ADAPTER_POSITION = "args_adapter_position";
     private static final String ARGS_SONG_STRING = "args_song_string";
+    private static final String FORMAT = "%02d:%02d:%02d";
     private MainPlayer mMainPlayer;
 
+    private CountDownTimer mCountDownTimer;
     private int[] mRepeatStateArray;
-    private int mSongCurrentPosition;
+    private int mResumeSongCurrentPosition;
     private Uri mSongUri;
     private boolean isShuffleBtnClicked = false;
     private ImageButton mPlayBtn, mNextBtn, mShuffleBtn, mPreviousBtn, mRepeatBtn;
     private ImageView mAlbumCover;
     private SeekBar mMusicSeekBar;
-    private TextView mSongTitle;
+    private TextView mSongTitle, mTimerSeekBar, mCountDownSeekBar;
     private MediaPlayer mMusicPlayer;
     private int mAdapterPosition;
     private Song mSong;
@@ -51,7 +55,10 @@ public class PlayMusicFragment extends Fragment {
         @Override
         public void run() {
             mMusicSeekBar.setProgress(mMainPlayer.getCurrentDuration());
-            mHandler.postDelayed(this, 500);
+            mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
+            mCountDownTimer.onFinish();
+            counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
+            mHandler.postDelayed(this, 1000);
         }
     };
 
@@ -82,6 +89,7 @@ public class PlayMusicFragment extends Fragment {
         mRepeatStateArray = new int[]{0, 1, 2};
         mRepeatState = 0;
         mMainPlayer = MainPlayer.getInstance();
+        counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
     }
 
     @Override
@@ -95,8 +103,7 @@ public class PlayMusicFragment extends Fragment {
 //            mAlbumCover.setImageURI(mSong.getSongImageUri());
 
         mMainPlayer.play(mSong);
-        mPlayBtn.setImageResource(R.drawable.ic_pause_music);
-        mSongTitle.setText(mSong.getTitle());
+        setSongInfo();
 
         mMusicSeekBar.setMax(mSong.getSongDuration());
         mHandler.postDelayed(runnable, 1000);
@@ -104,8 +111,13 @@ public class PlayMusicFragment extends Fragment {
         mMusicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser)
+                if (fromUser) {
                     mMainPlayer.seekTo(progress);
+                    mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
+                    mCountDownTimer.onFinish();
+                    counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
+
+                }
             }
 
             @Override
@@ -163,9 +175,10 @@ public class PlayMusicFragment extends Fragment {
             if (mMainPlayer.isPlaying()) {
                 mMainPlayer.pause();
                 mPlayBtn.setImageResource(R.drawable.ic_play_music);
-                mSongCurrentPosition = mMainPlayer.getCurrentDuration();
+                mResumeSongCurrentPosition = mMainPlayer.getCurrentDuration();
+                mCountDownTimer.onFinish();
             } else {
-                mMainPlayer.seekTo(mSongCurrentPosition);
+                mMainPlayer.seekTo(mResumeSongCurrentPosition);
                 mMainPlayer.play(mSong);
                 mPlayBtn.setImageResource(R.drawable.ic_pause_music);
             }
@@ -278,6 +291,11 @@ public class PlayMusicFragment extends Fragment {
             mPlayBtn.setImageResource(R.drawable.ic_pause_music);
         else
             mPlayBtn.setImageResource(R.drawable.ic_play_music);
+
+        mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
+        mCountDownTimer.onFinish();
+        counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
+
     }
 
     private void setRepeatState(int repeatState){
@@ -303,6 +321,8 @@ public class PlayMusicFragment extends Fragment {
         mPreviousBtn = view.findViewById(R.id.previous_button);
         mSongTitle = view.findViewById(R.id.song_title_single_play_music_frag);
         mRepeatBtn = view.findViewById(R.id.repeat_button);
+        mTimerSeekBar = view.findViewById(R.id.timer_seek_bar);
+        mCountDownSeekBar = view.findViewById(R.id.count_down_timer_seek_bar);
     }
 
     @Override
@@ -318,4 +338,67 @@ public class PlayMusicFragment extends Fragment {
         else
             isShuffleBtnClicked = true;
     }
+
+    private String milliSecondsToTimer(long milliseconds){
+        String hoursTimerString ;
+        String secondsString ;
+        String minutesString ;
+
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+
+
+        hoursTimerString = hours < 10 ? "0" + hours : hours + "";
+        minutesString = minutes < 10 ? "0" + minutes : minutes + "";
+        secondsString = seconds < 10 ? "0" + seconds : seconds + "";
+
+        if(mMainPlayer.getDuration() < 3600*1000)
+            return minutesString + ":" + secondsString;
+        else
+            return hoursTimerString + ":" + minutesString + ":" + secondsString;
+    }
+
+    private String milliSecondsToCountDownTimer(long  totalDuration, long milliseconds){
+
+        String hoursString ;
+        String secondsString ;
+        String minutesString ;
+
+        int hours = (int) (totalDuration / 1000*60*60) - (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(totalDuration % (1000*60*60)) / (1000*60) - (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((totalDuration % (1000*60*60)) % (1000*60) / 1000) -(int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+
+
+        hoursString = hours < 10 ? "0" + hours : hours + "";
+        minutesString = minutes < 10 ? "0" + minutes : minutes + "";
+        secondsString = seconds < 10 ? "0" + seconds : seconds + "";
+
+        if(mMainPlayer.getDuration() < 3600*1000)
+            return minutesString + ":" + secondsString;
+        else
+            return hoursString + ":" + minutesString + ":" + secondsString;
+    }
+
+    private void counterDownTimer(long remainingDuration, final TextView tv){
+
+        mCountDownTimer = new CountDownTimer(remainingDuration, 1000) { // adjust the milli seconds here
+
+            public void onTick(long millisUntilFinished) {
+
+                tv.setText(""+String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+            }
+
+            public void onFinish() {
+                this.cancel();
+            }
+        }.start();
+
+    }
+
 }

@@ -43,7 +43,7 @@ public class MainPlayer {
         mMediaPlayer.start();
     }
 
-    public int songDuration() {
+    public int getDuration() {
         return mMediaPlayer.getDuration();
     }
 

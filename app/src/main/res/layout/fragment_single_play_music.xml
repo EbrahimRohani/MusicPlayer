@@ -106,5 +106,23 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="TextView" />
 
+    <TextView
+        android:id="@+id/timer_seek_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_bar"
+        tools:text="03:33" />
+
+    <TextView
+        android:id="@+id/count_down_timer_seek_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/music_seek_bar"
+        tools:text="01:24" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
