@@ -2,15 +2,18 @@ package com.example.ebrah.musicplayer.controller;
 
 
 import android.annotation.SuppressLint;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.model.MainPlayer;
 import com.example.ebrah.musicplayer.R;
@@ -35,6 +38,8 @@ public class PlayMusicFragment extends Fragment {
     private ImageButton mPlayBtn, mNextBtn, mShuffleBtn, mPreviousBtn;
     private ImageView mAlbumCover;
     private SeekBar mMusicSeekBar;
+    private TextView mSongTitle;
+    private MediaPlayer mMusicPlayer;
     private int mAdapterPosition;
     private Song mSong;
     private int mPrevPosition;
@@ -44,7 +49,7 @@ public class PlayMusicFragment extends Fragment {
         @Override
         public void run() {
             mMusicSeekBar.setProgress(mMainPlayer.getCurrentDuration());
-            mHandler.postDelayed(this, 1000);
+            mHandler.postDelayed(this, 500);
         }
     };
 
@@ -82,12 +87,13 @@ public class PlayMusicFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_single_play_music, container, false);
         initialize(view);
 
-        if (mSong.getSongImageUri() != null)
-            mAlbumCover.setImageURI(mSong.getSongImageUri());
+        setSongInfo();
+//        if (mSong.getSongImageUri() != null)
+//            mAlbumCover.setImageURI(mSong.getSongImageUri());
 
         mMainPlayer.play(mSong);
         mPlayBtn.setImageResource(R.drawable.ic_pause_music);
-
+        mSongTitle.setText(mSong.getTitle());
 
         mMusicSeekBar.setMax(mSong.getSongDuration());
         mHandler.postDelayed(runnable, 1000);
@@ -110,6 +116,15 @@ public class PlayMusicFragment extends Fragment {
             }
         });
 
+        mMainPlayer.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
+                mMusicSeekBar.setMax(mSong.getSongDuration());
+                mMainPlayer.next(mSong);
+                setSongInfo();
+            }
+        });
 
         mPlayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,40 +147,54 @@ public class PlayMusicFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mMainPlayer.pause();
-                mPrevCounter = 0;
+                //mPrevCounter = 0;
                 if(isShuffleBtnClicked) {
                     Random random = new Random();
                     int shuffledPosition = random.nextInt(SongLab.getInstance().getSongList(getActivity()).size());
                     mSong = SongLab.getInstance().getSongList(getActivity()).get(shuffledPosition);
-                    mPrevPosition = mAdapterPosition;
+                    //mPrevPosition = mAdapterPosition;
                     mAdapterPosition = shuffledPosition;
 
                 }
 
                 else {
+                    if(mAdapterPosition == SongLab.getInstance().getSongList(getActivity()).size()-1)
+                        mAdapterPosition = -1;
                     mSong = SongLab.getInstance().getSongList(getActivity()).get(++mAdapterPosition);
-                    mPrevPosition = mAdapterPosition;
+                        //mPrevPosition = mAdapterPosition;
+
                 }
                 mMusicSeekBar.setMax(mSong.getSongDuration());
                 mMainPlayer.next(mSong);
-                setSongCover();
+                setSongInfo();
             }
         });
 
         mPreviousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mPrevCounter == 0){
-                    mPrevPosition++;
-                    mPrevCounter ++;
+                if(mAdapterPosition == 0){
+                    mAdapterPosition = SongLab.getInstance().getSongList(getActivity()).size();
                 }
-                mMainPlayer.pause();
-                mSong = SongLab.getInstance().getSongList(getActivity()).get(--mPrevPosition);
-                mMusicSeekBar.setMax(mSong.getSongDuration());
-                mMainPlayer.next(mSong);
-                mAdapterPosition = mPrevPosition;
+                if(mMainPlayer.getCurrentDuration()< 2000) {
+//                    if (mPrevCounter == 0) {
+//                        mPrevPosition++;
+//                        mPrevCounter++;
+//                    }
+                    mMainPlayer.pause();
+                    mSong = SongLab.getInstance().getSongList(getActivity()).get(--mAdapterPosition);
+                    mMusicSeekBar.setMax(mSong.getSongDuration());
+                    mMainPlayer.next(mSong);
+                    //mAdapterPosition = mPrevPosition;
 
-                setSongCover();
+                    setSongInfo();
+                }
+                else {
+                    mMainPlayer.stop();
+                    mMainPlayer.reset();
+                    mMainPlayer.play(mSong);
+                }
+
             }
         });
 
@@ -184,11 +213,12 @@ public class PlayMusicFragment extends Fragment {
         return view;
     }
 
-    private void setSongCover() {
+    private void setSongInfo() {
         if(mSong.getSongImageUri() == null)
             mAlbumCover.setImageResource(R.drawable.ic_all_musics);
         else
             mAlbumCover.setImageURI(mSong.getSongImageUri());
+        mSongTitle.setText(mSong.getTitle());
     }
 
     private void initialize(View view) {
@@ -198,6 +228,7 @@ public class PlayMusicFragment extends Fragment {
         mAlbumCover = view.findViewById(R.id.music_single_album_cover);
         mShuffleBtn = view.findViewById(R.id.shuffle_button_unselected);
         mPreviousBtn = view.findViewById(R.id.previous_button);
+        mSongTitle = view.findViewById(R.id.song_title_single_play_music_frag);
     }
 
     @Override

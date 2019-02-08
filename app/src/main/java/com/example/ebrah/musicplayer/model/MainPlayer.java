@@ -34,6 +34,10 @@ public class MainPlayer {
 //        return this;
 //    }
 
+    public MediaPlayer getMediaPlayer(){
+        return mMediaPlayer;
+    }
+
     private void songPrepare(Song song) throws IOException {
         mMediaPlayer.reset();
         mMediaPlayer.setDataSource(App.getApp().getApplicationContext(), song.getSongUri());
@@ -100,4 +104,5 @@ public class MainPlayer {
     public void stop() {
         mMediaPlayer.stop();
     }
+
 }
