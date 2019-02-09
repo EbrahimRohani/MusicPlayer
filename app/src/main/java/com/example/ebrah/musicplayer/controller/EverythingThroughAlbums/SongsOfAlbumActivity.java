@@ -3,7 +3,7 @@ package com.example.ebrah.musicplayer.controller.EverythingThroughAlbums;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.ebrah.musicplayer.controller.SingleFragmentActivity;
+import com.example.ebrah.musicplayer.controller.Mains.SingleFragmentActivity;
 
 import androidx.fragment.app.Fragment;
 

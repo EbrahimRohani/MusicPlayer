@@ -17,6 +17,7 @@
         android:layout_marginBottom="8dp"
         android:background="@color/grey"
         android:backgroundTint="@color/colorPrimaryDark"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@+id/song_title_single_play_music_frag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="3"

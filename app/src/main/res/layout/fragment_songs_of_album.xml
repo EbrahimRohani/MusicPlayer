@@ -9,14 +9,16 @@
     <ImageView
         android:id="@+id/album_cover_image_view"
         android:layout_width="0dp"
-        android:layout_height="256dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
+        android:background="@color/grey"
         android:cropToPadding="false"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/ic_all_musics" />
 
     <TextView
         android:id="@+id/album_name_text_view"

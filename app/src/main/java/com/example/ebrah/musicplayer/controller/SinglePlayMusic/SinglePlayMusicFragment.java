@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.ebrah.musicplayer.model.MainPlayer;
+import com.example.ebrah.musicplayer.model.MainPlayer.MainPlayer;
 import com.example.ebrah.musicplayer.R;
 import com.example.ebrah.musicplayer.model.Song.Song;
 import com.example.ebrah.musicplayer.model.Song.SongLab;
@@ -333,8 +333,6 @@ public class SinglePlayMusicFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(runnable);
-        mMainPlayer.release();
-
     }
 
     public void setShuffleBtnClicked(){

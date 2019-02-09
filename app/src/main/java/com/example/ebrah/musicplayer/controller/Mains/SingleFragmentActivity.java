@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller;
+package com.example.ebrah.musicplayer.controller.Mains;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;

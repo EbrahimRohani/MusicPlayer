@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.model;
+package com.example.ebrah.musicplayer.model.MainPlayer;
 
 import android.media.MediaPlayer;
 import android.util.Log;

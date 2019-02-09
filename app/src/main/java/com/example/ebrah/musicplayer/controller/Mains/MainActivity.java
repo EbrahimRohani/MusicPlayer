@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller;
+package com.example.ebrah.musicplayer.controller.Mains;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -10,26 +10,24 @@ import com.example.ebrah.musicplayer.R;
 import com.example.ebrah.musicplayer.controller.BottomNavLists.AlbumListFragment;
 import com.example.ebrah.musicplayer.controller.BottomNavLists.ArtistListFragment;
 import com.example.ebrah.musicplayer.controller.BottomNavLists.SongListFragment;
+import com.example.ebrah.musicplayer.model.MainPlayer.MainPlayer;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-public class MainActivity extends SingleFragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private BottomNavigationView mBottomNavigationView;
 
     @Override
-    public Fragment createFragment() {
-        return SongListFragment.newInstance();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         requestAudioPermissions();
         mBottomNavigationView = findViewById(R.id.bottom_nav);
 
@@ -93,6 +91,11 @@ public class MainActivity extends SingleFragmentActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainPlayer.getInstance().release();
+    }
 }
 
 
