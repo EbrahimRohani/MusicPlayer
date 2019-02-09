@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller;
+package com.example.ebrah.musicplayer.controller.BottomNavLists;
 
 
 import android.os.Bundle;
@@ -16,9 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.R;
-import com.example.ebrah.musicplayer.model.Album;
-import com.example.ebrah.musicplayer.model.Artist;
-import com.example.ebrah.musicplayer.model.ArtistLab;
+import com.example.ebrah.musicplayer.model.Artist.Artist;
+import com.example.ebrah.musicplayer.model.Artist.ArtistLab;
 
 import java.util.ArrayList;
 import java.util.List;

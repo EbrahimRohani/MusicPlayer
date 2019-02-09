@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller;
+package com.example.ebrah.musicplayer.controller.BottomNavLists;
 
 
 import android.content.Intent;
@@ -18,8 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.R;
-import com.example.ebrah.musicplayer.model.Song;
-import com.example.ebrah.musicplayer.model.SongLab;
+import com.example.ebrah.musicplayer.controller.SinglePlayMusic.SinglePlayMusicActivity;
+import com.example.ebrah.musicplayer.model.Song.Song;
+import com.example.ebrah.musicplayer.model.Song.SongLab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class SongListFragment extends Fragment {
     }
 
     public void updateUI(){
-        mSongList = SongLab.getInstance().getSongList(getActivity());
+        mSongList = SongLab.getInstance().getSongList(getActivity(), null);
         Log.i("hello", "updateUI: " + mSongList.size());
         mSongAdapter = new SongAdapter(mSongList);
         mSongsRecyclerView.setAdapter(mSongAdapter);
@@ -83,7 +84,7 @@ public class SongListFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     mAdapterPosition = getAdapterPosition();
-                    Intent intent = PlayMusicActivity.newIntent(getActivity(), mSong.getSongUri().toString(), mAdapterPosition);
+                    Intent intent = SinglePlayMusicActivity.newIntent(getActivity(), mSong.getSongUri().toString(), mAdapterPosition, null);
                     startActivity(intent);
                 }
             });

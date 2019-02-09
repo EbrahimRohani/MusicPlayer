@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.model;
+package com.example.ebrah.musicplayer.model.Artist;
 
 import android.net.Uri;
 
@@ -34,6 +34,5 @@ public class Artist {
         this.name = name;
     }
 
-    
 
 }

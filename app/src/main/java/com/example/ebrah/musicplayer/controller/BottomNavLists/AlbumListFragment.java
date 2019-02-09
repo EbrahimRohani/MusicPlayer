@@ -1,6 +1,7 @@
-package com.example.ebrah.musicplayer.controller;
+package com.example.ebrah.musicplayer.controller.BottomNavLists;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,8 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.R;
-import com.example.ebrah.musicplayer.model.Album;
-import com.example.ebrah.musicplayer.model.AlbumLab;
+import com.example.ebrah.musicplayer.controller.EverythingThroughAlbums.SongsOfAlbumActivity;
+import com.example.ebrah.musicplayer.model.Album.Album;
+import com.example.ebrah.musicplayer.model.Album.AlbumLab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +63,7 @@ public class AlbumListFragment extends Fragment {
 
 
     public void updateUI(){
-        mAlbumList = AlbumLab.getInstance().albumList(getActivity());
+        mAlbumList = AlbumLab.getInstance().getAlbumList(getActivity());
         mAlbumAdapter = new AlbumAdapter(mAlbumList);
         mAlbumRecyclerView.setAdapter(mAlbumAdapter);
     }
@@ -76,6 +78,13 @@ public class AlbumListFragment extends Fragment {
 
             mAlbumCover = itemView.findViewById(R.id.artist_cover);
             mAlbumTitle = itemView.findViewById(R.id.artist_name);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = SongsOfAlbumActivity.newIntent(getActivity(), mAlbum.getId());
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bind(Album album){

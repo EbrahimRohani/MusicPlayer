@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.model;
+package com.example.ebrah.musicplayer.model.Song;
 
 import android.net.Uri;
 
@@ -127,7 +127,7 @@ public class Song {
     public void setSongUri(Uri songUri) {
         this.songUri = songUri;
     }
-
+    
 
 
     

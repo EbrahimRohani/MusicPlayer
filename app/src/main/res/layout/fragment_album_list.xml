@@ -4,7 +4,7 @@
     android:id="@+id/album_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.AlbumListFragment"
+    tools:context=".controller.BottomNavLists.AlbumListFragment"
     >
 
 

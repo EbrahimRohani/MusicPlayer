@@ -21,7 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.PlayMusicActivity"></activity>
+        <activity android:name=".controller.SinglePlayMusic.SinglePlayMusicActivity" />
+        <activity android:name=".controller.EverythingThroughAlbums.SongsOfAlbumActivity"></activity>
     </application>
 
 </manifest>

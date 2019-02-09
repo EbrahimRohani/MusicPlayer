@@ -1,6 +1,5 @@
-package com.example.ebrah.musicplayer.model;
+package com.example.ebrah.musicplayer.model.Artist;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,11 +39,11 @@ public class ArtistLab {
 
                 Artist artist = new Artist(artistId, title);
                 artists.add(artist);
-                Log.e(TAG, "albumList: " + artists.size());
+                Log.e(TAG, "getAlbumList: " + artists.size());
                 artistCursor.moveToNext();
             }
         }catch (Exception e){
-            Log.e(TAG, "albumList: ", e);
+            Log.e(TAG, "getAlbumList: ", e);
         } finally{
             artistCursor.close();
         }

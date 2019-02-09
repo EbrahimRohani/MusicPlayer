@@ -3,7 +3,8 @@ package com.example.ebrah.musicplayer.database;
 
 import android.content.Context;
 
-import com.example.ebrah.musicplayer.model.DaoMaster;
+
+import com.example.ebrah.musicplayer.model.Album.DaoMaster;
 
 import org.greenrobot.greendao.database.Database;
 

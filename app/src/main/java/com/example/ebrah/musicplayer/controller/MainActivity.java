@@ -7,6 +7,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.ebrah.musicplayer.R;
+import com.example.ebrah.musicplayer.controller.BottomNavLists.AlbumListFragment;
+import com.example.ebrah.musicplayer.controller.BottomNavLists.ArtistListFragment;
+import com.example.ebrah.musicplayer.controller.BottomNavLists.SongListFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;

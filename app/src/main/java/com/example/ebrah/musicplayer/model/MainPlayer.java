@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.example.ebrah.musicplayer.database.App;
+import com.example.ebrah.musicplayer.model.Song.Song;
 
 import java.io.IOException;
 
@@ -84,6 +85,14 @@ public class MainPlayer {
 
     public void reset(){
         mMediaPlayer.reset();
+    }
+
+    public void prepare(){
+        try {
+            mMediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void release(){
