@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller.EverythingThroughAlbums;
+package com.example.ebrah.musicplayer.controller.AlbumsBottomNav;
 
 import android.content.Context;
 import android.content.Intent;

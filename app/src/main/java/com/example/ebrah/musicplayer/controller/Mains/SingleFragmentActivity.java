@@ -18,7 +18,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_single_activity);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentManager.findFragmentById(R.id.fragment_container) == null)
-            fragmentManager.beginTransaction().add(R.id.fragment_container, createFragment()).commit();
+        if(fragmentManager.findFragmentById(R.id.single_fragment_container) == null)
+            fragmentManager.beginTransaction().add(R.id.single_fragment_container, createFragment()).commit();
     }
 }

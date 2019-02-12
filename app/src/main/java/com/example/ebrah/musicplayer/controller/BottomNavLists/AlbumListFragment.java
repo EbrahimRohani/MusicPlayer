@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.R;
-import com.example.ebrah.musicplayer.controller.EverythingThroughAlbums.SongsOfAlbumActivity;
+import com.example.ebrah.musicplayer.controller.AlbumsBottomNav.SongsOfAlbumActivity;
 import com.example.ebrah.musicplayer.model.Album.Album;
 import com.example.ebrah.musicplayer.model.Album.AlbumLab;
 
@@ -28,14 +28,16 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class AlbumListFragment extends Fragment {
+    public static final String ARGS_ARTIST_NAME = "args_artist_name";
     private List<Album> mAlbumList;
     private AlbumAdapter mAlbumAdapter;
     private RecyclerView mAlbumRecyclerView;
+    private String mArtistName;
 
-    public static AlbumListFragment newInstance() {
+    public static AlbumListFragment newInstance(String artistName) {
         
         Bundle args = new Bundle();
-        
+        args.putSerializable(ARGS_ARTIST_NAME, artistName);
         AlbumListFragment fragment = new AlbumListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -48,6 +50,7 @@ public class AlbumListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbumList = new ArrayList<>();
+        mArtistName = (String) getArguments().getSerializable(ARGS_ARTIST_NAME);
     }
 
     @Override
@@ -63,7 +66,7 @@ public class AlbumListFragment extends Fragment {
 
 
     public void updateUI(){
-        mAlbumList = AlbumLab.getInstance().getAlbumList(getActivity());
+        mAlbumList = AlbumLab.getInstance().getAlbumList(getActivity(),mArtistName);
         mAlbumAdapter = new AlbumAdapter(mAlbumList);
         mAlbumRecyclerView.setAdapter(mAlbumAdapter);
     }
@@ -122,7 +125,10 @@ public class AlbumListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mAlbumList.size();
+            if(mAlbumList != null)
+                return mAlbumList.size();
+            else
+                return 0;
         }
     }
 

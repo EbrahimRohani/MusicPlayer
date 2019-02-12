@@ -25,15 +25,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="7dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingTop="8dp"
         android:paddingBottom="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/song_icon"
         app:layout_constraintTop_toTopOf="parent"
-        android:maxLength="8"
-        android:ellipsize="end"
-        android:maxEms="8"
         tools:text="Song" />
 
     <TextView

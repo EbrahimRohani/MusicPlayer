@@ -30,7 +30,7 @@ public class SinglePlayMusicActivity extends AppCompatActivity {
 
         String songString= getIntent().getStringExtra(EXTRA_SONG_STRING);
         int adapterPosition = getIntent().getIntExtra(EXTRA_ADAPTER_POSITION, 0);
-        Long albumId = getIntent().getLongExtra(EXTRA_ALBUM_ID, 0);
+        Long albumId = (Long) getIntent().getSerializableExtra(EXTRA_ALBUM_ID);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SinglePlayMusicFragment singlePlayMusicFragment = SinglePlayMusicFragment.newInstance(songString, adapterPosition, albumId);

@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,23 +30,27 @@ public class MainActivity extends AppCompatActivity {
         requestAudioPermissions();
         mBottomNavigationView = findViewById(R.id.bottom_nav);
 
+        SongListFragment songListFragment = SongListFragment.newInstance();
+        if(getSupportFragmentManager().findFragmentById(R.id.activity_main_container) == null)
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_main_container, songListFragment).commit();
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.tab_songs:
                         SongListFragment songListFragment = SongListFragment.newInstance();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, songListFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_container, songListFragment).commit();
                         break;
 
                     case R.id.tab_albums:
-                        AlbumListFragment albumListFragment = AlbumListFragment.newInstance();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, albumListFragment).commit();
+                        AlbumListFragment albumListFragment = AlbumListFragment.newInstance(null);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_container, albumListFragment).commit();
                         break;
 
                     case R.id.tab_artists:
                         ArtistListFragment artistListFragment = ArtistListFragment.newInstance();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, artistListFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_container, artistListFragment).commit();
                 }
                 return true;
             }

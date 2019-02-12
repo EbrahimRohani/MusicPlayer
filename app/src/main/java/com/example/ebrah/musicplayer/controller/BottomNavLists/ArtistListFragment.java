@@ -1,6 +1,7 @@
 package com.example.ebrah.musicplayer.controller.BottomNavLists;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ebrah.musicplayer.R;
+import com.example.ebrah.musicplayer.controller.ArtistBottomNav.AlbumsOfArtist;
 import com.example.ebrah.musicplayer.model.Artist.Artist;
 import com.example.ebrah.musicplayer.model.Artist.ArtistLab;
 
@@ -75,6 +77,14 @@ public class ArtistListFragment extends Fragment {
             super(itemView);
             mArtistCover = itemView.findViewById(R.id.artist_cover);
             mArtistTitle = itemView.findViewById(R.id.artist_name);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = AlbumsOfArtist.newIntent(getActivity(), mArtist.getName());
+                    startActivity(intent);
+                }
+            });
         }
 
         public void bind(Artist artist){
@@ -86,7 +96,7 @@ public class ArtistListFragment extends Fragment {
     public class ArtistAdapter extends RecyclerView.Adapter<ArtistHolder> {
         private List<Artist> mArtistList;
 
-        public ArtistAdapter(List<Artist> artistList) {
+        private ArtistAdapter(List<Artist> artistList) {
             mArtistList = artistList;
         }
 
@@ -108,7 +118,9 @@ public class ArtistListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mArtistList.size();
+            if(mArtistList != null)
+                return mArtistList.size();
+            else return 0;
         }
     }
 

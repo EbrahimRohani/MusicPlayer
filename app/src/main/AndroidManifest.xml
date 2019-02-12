@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".controller.SinglePlayMusic.SinglePlayMusicActivity" />
-        <activity android:name=".controller.EverythingThroughAlbums.SongsOfAlbumActivity"></activity>
+        <activity android:name=".controller.AlbumsBottomNav.SongsOfAlbumActivity" />
+        <activity android:name=".controller.ArtistBottomNav.AlbumsOfArtist"></activity>
     </application>
 
 </manifest>

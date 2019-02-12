@@ -12,8 +12,8 @@ public class AlbumCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    public Album getAlbum(){
 
+    public Album getAlbum(){
         Long albumId = getLong(getColumnIndex(MediaStore.Audio.Albums._ID));
         String title = getString(getColumnIndex(MediaStore.Audio.Albums.ALBUM));
         String albumCoverString = getString(getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));

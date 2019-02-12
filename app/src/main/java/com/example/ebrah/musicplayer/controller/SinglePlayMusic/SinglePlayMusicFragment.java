@@ -44,7 +44,7 @@ public class SinglePlayMusicFragment extends Fragment {
     private ImageButton mPlayBtn, mNextBtn, mShuffleBtn, mPreviousBtn, mRepeatBtn;
     private ImageView mAlbumCover;
     private SeekBar mMusicSeekBar;
-    private TextView mSongTitle, mTimerSeekBar, mCountDownSeekBar;
+    private TextView mSongTitle, mTimerSeekBar, mCountDownSeekBarTextView;
     private MediaPlayer mMusicPlayer;
     private int mAdapterPosition;
     private Song mSong;
@@ -57,9 +57,8 @@ public class SinglePlayMusicFragment extends Fragment {
         public void run() {
             mMusicSeekBar.setProgress(mMainPlayer.getCurrentDuration());
             mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
-            //mCountDownTimer.onFinish();
-            //counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
-            mCountDownSeekBar.setText(milliSecondsToCountDownTimer(mMainPlayer.getDuration(), mMainPlayer.getCurrentDuration()));
+            mCountDownTimer.onFinish();
+            counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBarTextView);
             mHandler.postDelayed(this, 1000);
         }
     };
@@ -75,7 +74,7 @@ public class SinglePlayMusicFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARGS_SONG_STRING, songString);
         args.putInt(ARGS_ADAPTER_POSITION, adapterPosition);
-        args.putLong(ARGS_ALBUM_ID, albumId);
+        args.putSerializable(ARGS_ALBUM_ID, albumId);
         SinglePlayMusicFragment fragment = new SinglePlayMusicFragment();
         fragment.setArguments(args);
         return fragment;
@@ -84,16 +83,16 @@ public class SinglePlayMusicFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
         String songString = getArguments().getString(ARGS_SONG_STRING);
-        mAlbumId = getArguments().getLong(ARGS_ALBUM_ID);
+        mAlbumId = (Long) getArguments().getSerializable(ARGS_ALBUM_ID);
         mAdapterPosition = getArguments().getInt(ARGS_ADAPTER_POSITION);
         mSongUri = Uri.parse(songString);
         mSong = SongLab.getInstance().getSongByUri(getActivity(),mAlbumId, mSongUri);
         mRepeatStateArray = new int[]{0, 1, 2};
         mRepeatState = 0;
         mMainPlayer = MainPlayer.getInstance();
-        //counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
+        //counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBarTextView);
     }
 
     @Override
@@ -116,10 +115,8 @@ public class SinglePlayMusicFragment extends Fragment {
                 if (fromUser) {
                     mMainPlayer.seekTo(progress);
                     mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
-                    //mCountDownTimer.onFinish();
-//                    counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
-                    mCountDownSeekBar.setText(milliSecondsToCountDownTimer(mMainPlayer.getDuration(), mMainPlayer.getCurrentDuration()));
-
+                    mCountDownTimer.onFinish();
+                    counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBarTextView);
                 }
             }
 
@@ -199,6 +196,7 @@ public class SinglePlayMusicFragment extends Fragment {
                     int shuffledPosition = random.nextInt(SongLab.getInstance().getSongList(getActivity(),mAlbumId).size());
                     mSong = SongLab.getInstance().getSongList(getActivity(),mAlbumId).get(shuffledPosition);
                     mAdapterPosition = shuffledPosition;
+                    mCountDownTimer.onFinish();
 
                 }
 
@@ -206,6 +204,7 @@ public class SinglePlayMusicFragment extends Fragment {
                     if(mAdapterPosition == SongLab.getInstance().getSongList(getActivity(),mAlbumId).size()-1)
                         mAdapterPosition = -1;
                     mSong = SongLab.getInstance().getSongList(getActivity(),mAlbumId).get(++mAdapterPosition);
+                    mCountDownTimer.onFinish();
                         //mPrevPosition = mAdapterPosition;
                 }
                 loadMusic();
@@ -265,6 +264,7 @@ public class SinglePlayMusicFragment extends Fragment {
             int shuffledPosition = random.nextInt(SongLab.getInstance().getSongList(getActivity(),mAlbumId).size());
             mSong = SongLab.getInstance().getSongList(getActivity(),mAlbumId).get(shuffledPosition);
             mAdapterPosition = shuffledPosition;
+            mCountDownTimer.onFinish();
 
         }
 
@@ -295,11 +295,9 @@ public class SinglePlayMusicFragment extends Fragment {
         else
             mPlayBtn.setImageResource(R.drawable.ic_play_music);
 
-        mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
+//        mTimerSeekBar.setText(milliSecondsToTimer(mMainPlayer.getCurrentDuration()));
 //        mCountDownTimer.onFinish();
-//        counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBar);
-        mCountDownSeekBar.setText(milliSecondsToCountDownTimer(mMainPlayer.getDuration(), mMainPlayer.getCurrentDuration()));
-
+        counterDownTimer(mMainPlayer.getDuration() - mMainPlayer.getCurrentDuration(), mCountDownSeekBarTextView);
     }
 
     private void setRepeatState(int repeatState){
@@ -326,12 +324,14 @@ public class SinglePlayMusicFragment extends Fragment {
         mSongTitle = view.findViewById(R.id.song_title_single_play_music_frag);
         mRepeatBtn = view.findViewById(R.id.repeat_button);
         mTimerSeekBar = view.findViewById(R.id.timer_seek_bar);
-        mCountDownSeekBar = view.findViewById(R.id.count_down_timer_seek_bar);
+        mCountDownSeekBarTextView = view.findViewById(R.id.count_down_timer_seek_bar);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mCountDownTimer.onFinish();
+        mMainPlayer.reset();
         mHandler.removeCallbacks(runnable);
     }
 

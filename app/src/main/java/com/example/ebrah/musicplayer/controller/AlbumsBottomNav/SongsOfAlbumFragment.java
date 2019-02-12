@@ -1,4 +1,4 @@
-package com.example.ebrah.musicplayer.controller.EverythingThroughAlbums;
+package com.example.ebrah.musicplayer.controller.AlbumsBottomNav;
 
 
 import android.content.Intent;
@@ -57,7 +57,7 @@ public class SongsOfAlbumFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbumId = getArguments().getLong(ARGS_ALBUM_ID);
-        mAlbum = AlbumLab.getInstance().getAlbumById(getActivity(), mAlbumId);
+        mAlbum = AlbumLab.getInstance().getAlbumById(getActivity(), mAlbumId, null);
     }
 
     @Override

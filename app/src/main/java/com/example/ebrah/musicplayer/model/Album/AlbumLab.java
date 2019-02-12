@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.example.ebrah.musicplayer.model.Artist.ArtistCursorWrapper;
 import com.example.ebrah.musicplayer.model.Song.Song;
 
 import java.util.ArrayList;
@@ -27,10 +28,19 @@ public class AlbumLab {
         return instance;
     }
 
-    public List<Album> getAlbumList(Context context){
+    public List<Album> getAlbumList(Context context, String artistName){
         List<Album> albums = new ArrayList<>();
         Uri albumUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
-        AlbumCursorWrapper albumCursorWrapper = queryCursor(context, albumUri, null, null);
+
+        String whereClause = null;
+        String[]whereArgs = null;
+
+        if(artistName != null){
+            whereClause = MediaStore.Audio.Albums.ARTIST + " = ? ";
+            whereArgs = new String[]{artistName};
+        }
+
+        AlbumCursorWrapper albumCursorWrapper = queryCursor(context, albumUri, whereClause, whereArgs);
 
         try {
             if (albumCursorWrapper.getCount() == 0)
@@ -50,9 +60,9 @@ public class AlbumLab {
         return albums;
     }
 
-    public Album getAlbumById(Context context, Long albumId){
-        for (Album album : getAlbumList(context)){
-            if(album.getId().equals(albumId))
+    public Album getAlbumById(Context context, Long albumId, String artistName) {
+        for (Album album : getAlbumList(context, artistName)) {
+            if (album.getId().equals(albumId))
                 return album;
         }
         return null;

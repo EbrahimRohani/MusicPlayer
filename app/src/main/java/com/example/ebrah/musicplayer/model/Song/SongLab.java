@@ -75,7 +75,7 @@ public class SongLab {
             }
 
         }catch (Exception e){
-            Log.e("soop", "getSongCover: ",e );
+            Log.e(TAG, "getSongCover: ",e );
         } finally{
             albumCursor.close();
         }
@@ -112,7 +112,7 @@ public class SongLab {
         return songList;
     }
 
-    public SongCursorWrapper queryCursor(Context context,Uri songUri, String whereClause, String[] whereArgs){
+    private SongCursorWrapper queryCursor(Context context,Uri songUri, String whereClause, String[] whereArgs){
         Cursor songCursor = context.getContentResolver().query(songUri, null, whereClause, whereArgs, null);
         return new SongCursorWrapper(songCursor);
     }
